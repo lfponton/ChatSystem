@@ -1,5 +1,6 @@
 package client.network;
 
+import transferobjects.Message;
 import transferobjects.Request;
 
 import java.io.IOException;
@@ -27,12 +28,12 @@ public class ClientSocketHandler implements Runnable
       inFromServer = new ObjectInputStream(socket.getInputStream());
       outToServer = new ObjectOutputStream(socket.getOutputStream());
 
-      outToServer.writeObject(new Request("Listener", null));
+
+      outToServer.writeObject(new Request("Update", null));
 
       while(true)
       {
         client.listenToServer(receivedRequest());
-        System.out.println(receivedRequest());
       }
     }
     catch (IOException e)
@@ -55,7 +56,7 @@ public class ClientSocketHandler implements Runnable
     return request;
   }
 
-  public Request request(String arg, String type)
+  public Request request(Message arg, String type)
       throws IOException, ClassNotFoundException
   {
     outToServer.writeObject(new Request(type, arg));

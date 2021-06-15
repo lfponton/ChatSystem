@@ -22,6 +22,50 @@ public class SocketClient implements Client
     support = new PropertyChangeSupport(this);
     messages = new MessageList();
   }
+
+
+  @Override public void startClient()
+  {
+    try
+    {
+      Socket socket = new Socket("localhost", 1234);
+      handler = new ClientSocketHandler(socket, this);
+      new Thread(handler).start();
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  @Override public void listenToServer(Request request)
+  {
+    support.firePropertyChange(request.getType(), null, request.getArgument());
+  }
+
+  public int getNumberOfConnections() {
+
+    return 0;
+  }
+
+  public void setUsername(String username)
+  {
+    this.username = username;
+  }
+
+  public void sendMessage(String str) {
+    try
+    {
+      Request response = handler.request(new Message(username, str), "NewMessage");
+      support.firePropertyChange(response.getType(), null, response.getArgument());
+    }
+    catch (IOException | ClassNotFoundException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+
   @Override public void addPropertyChangeListener(String name,
       PropertyChangeListener listener)
   {
@@ -45,61 +89,4 @@ public class SocketClient implements Client
   {
     support.removePropertyChangeListener(listener);
   }
-
-  @Override public void startClient()
-  {
-    try
-    {
-      Socket socket = new Socket("localhost", 1234);
-      handler = new ClientSocketHandler(socket, this);
-      new Thread(handler).start();
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  @Override public void listenToServer(Request request)
-  {
-    support.firePropertyChange(request.getType(), null, request.getArgument());
-  }
-
-
-  @Override public String getUsername()
-  {
-    return username;
-  }
-
-  @Override public Message getMessage()
-  {
-    return message;
-  }
-
-  public MessageList getMessages()
-  {
-    return messages;
-  }
-
-  @Override public void updateMessage(String message)
-  {
-    Message lastMessage = new Message(username, message);
-    messages.addMessage(lastMessage);
-    this.message = lastMessage;
-    support.firePropertyChange("updated", null, this.message);
-  }
-
-  public String sendMessage(String str) {
-    try
-    {
-      Request response = handler.request(str, "Message");
-      return (String) response.getArgument();
-    }
-    catch (IOException | ClassNotFoundException e)
-    {
-      e.printStackTrace();
-    }
-    return str;
-  }
-
 }

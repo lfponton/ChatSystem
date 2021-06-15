@@ -1,25 +1,54 @@
 package client.views.chat;
 
+import client.core.ViewHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import transferobjects.Message;
+
+import java.util.ArrayList;
 
 public class ChatController
 {
   @FXML private TextField messageField;
-  @FXML private TextArea messagesArea;
-  private ChatViewModel viewModel;
-  public void init(ChatViewModel viewModel)
+  @FXML private Label numberOfConnections;
+  @FXML private ListView<Message> chatBox;
+  private ChatViewModel chatViewModel;
+  private ViewHandler viewHandler;
+  ObservableList<Message> messages;
+
+  public void init(ChatViewModel chatViewModel, ViewHandler viewHandler)
   {
-    this.viewModel = viewModel;
+    this.chatViewModel = chatViewModel;
+    this.viewHandler = viewHandler;
+    messageField.textProperty().bindBidirectional(chatViewModel.getMessage());
+    messages = FXCollections.observableArrayList(new ArrayList<>());
+    chatBox.setItems(messages);
+    chatViewModel.loadMessages().addListener(
+        (ListChangeListener<? super Message>) observable -> onNewMessage(
+            observable.getList()));
 
-    messagesArea.textProperty().bind(viewModel.messageProperty());
+  }
 
+  private void onNewMessage(ObservableList<? extends Message> list)
+  {
+    chatBox.setItems((ObservableList<Message>) list);
   }
 
   public void sendMessageButton(ActionEvent evt)
   {
-    viewModel.updateMessage(messageField.getText());
+    chatViewModel.sendMessage();
+    messageField.clear();
+  }
+
+  public void numberOfConnections(ActionEvent evt)
+  {
+    numberOfConnections
+        .setText(String.valueOf(chatViewModel.numberOfConnections()));
   }
 }

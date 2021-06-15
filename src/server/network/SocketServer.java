@@ -1,14 +1,16 @@
 package server.network;
 
+import server.model.ChatDataModel;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SocketServer
 {
-  private server.model.DataModel model;
+  private ChatDataModel model;
 
-  public SocketServer(server.model.DataModel model)
+  public SocketServer(ChatDataModel model)
   {
     this.model = model;
   }

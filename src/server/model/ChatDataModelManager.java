@@ -1,47 +1,31 @@
-package client.model;
+package server.model;
 
-import client.network.Client;
 import transferobjects.Message;
-import transferobjects.MessageList;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MessageModelManager implements MessageModel
+public class ChatDataModelManager implements ChatDataModel
 {
   private PropertyChangeSupport support;
-  private Client client;
+  private List<Message> messages;
 
-  public MessageModelManager(Client client) {
+  public ChatDataModelManager() {
     support = new PropertyChangeSupport(this);
-    this.client = client;
-    client.startClient();
-    client.addPropertyChangeListener("updated", this::updated);
+    messages = new ArrayList<>();
   }
 
-  private void updated(PropertyChangeEvent evt)
+  @Override public void sendMessage(Message message)
   {
-    support.firePropertyChange(evt);
+    messages.add(message);
+    support.firePropertyChange("NewMessage", null, messages);
   }
 
-  @Override public String getUsername()
+  @Override public void getMessages()
   {
-    return client.getUsername();
-  }
-
-  @Override public Message getMessage()
-  {
-    return client.getMessage();
-  }
-
-  @Override public void updateMessage(String message)
-  {
-    client.updateMessage(message);
-  }
-
-  public MessageList getMessages() {
-    return client.getMessages();
+    support.firePropertyChange("Update", null, messages);
   }
 
   @Override public void addPropertyChangeListener(String name,

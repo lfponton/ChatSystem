@@ -1,5 +1,6 @@
 package server.network;
 
+import server.model.ChatDataModel;
 import transferobjects.Message;
 import transferobjects.Request;
 
@@ -12,12 +13,12 @@ import java.net.Socket;
 public class ServerSocketHandler implements Runnable
 {
   private Socket socket;
-  private server.model.DataModel model;
+  private ChatDataModel model;
   private ObjectInputStream inFromClient;
   private ObjectOutputStream outToClient;
   private Pool pool;
 
-  public ServerSocketHandler(Socket socket, server.model.DataModel model, Pool pool)
+  public ServerSocketHandler(Socket socket, ChatDataModel model, Pool pool)
   {
     this.socket = socket;
     this.model = model;
@@ -40,14 +41,15 @@ public class ServerSocketHandler implements Runnable
     {
       Request request = (Request) inFromClient.readObject();
 
-      if ("Listener".equals(request.getType()))
+      if ("Update".equals(request.getType()))
       {
-        model.addPropertyChangeListener("updated", this::onUpdated);
+        model.addPropertyChangeListener("Update", this::onUpdate);
+        model.getMessages();
       }
-      else if ("Message".equals(request.getType()))
+      else if ("NewMessage".equals(request.getType()))
       {
-        Message message = model.getMessage();
-        outToClient.writeObject(new Request("Message", message));
+        model.addPropertyChangeListener("NewMessage", this::onNewMessage);
+        model.sendMessage((Message) request.getArgument());
       }
     }
     catch (IOException | ClassNotFoundException e)
@@ -56,7 +58,19 @@ public class ServerSocketHandler implements Runnable
     }
   }
 
-  public void onUpdated(PropertyChangeEvent evt)
+  private void onNewMessage(PropertyChangeEvent evt)
+  {
+    try
+    {
+      outToClient.writeObject(new Request(evt.getPropertyName(), evt.getNewValue()));
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  public void onUpdate(PropertyChangeEvent evt)
   {
     try
     {

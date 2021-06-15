@@ -1,47 +1,67 @@
 package client.views.chat;
 
-import client.model.MessageModel;
+import client.model.ChatModel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import util.PropertyChangeSubject;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import transferobjects.Message;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatViewModel
 {
-  private StringProperty username;
-  private StringProperty messages;
-  private MessageModel model;
+  private ChatModel chatModel;
+  private StringProperty message;
+  private String numberOfConnections;
+  private ObservableList<Message> messages;
 
-  public ChatViewModel(MessageModel model)
+  public ChatViewModel(ChatModel chatModel)
   {
-    this.model = model;
-    username = new SimpleStringProperty();
-    messages = new SimpleStringProperty();
-    ((PropertyChangeSubject) model).addPropertyChangeListener((PropertyChangeEvent evt) -> this.updated());
+    this.chatModel = chatModel;
+    message = new SimpleStringProperty();
+    messages = FXCollections.observableArrayList(new ArrayList<>());
+    numberOfConnections = "";
+    chatModel.addPropertyChangeListener("Update", this::onUpdate);
+    chatModel.addPropertyChangeListener("NewMessage", this::onNewMessage);
   }
 
-  public void updated()
+  private void onUpdate(PropertyChangeEvent evt)
   {
+    ObservableList<Message> messageList = FXCollections.observableArrayList((List<Message>)evt.getNewValue());
     Platform.runLater(() -> {
-      username.setValue(model.getUsername());
-      messages.setValue(model.getMessages().toString());
+      messages.setAll(messageList);
     });
   }
 
-  public StringProperty usernameProperty()
+  private void onNewMessage(PropertyChangeEvent evt)
   {
-    return username;
+    ObservableList<Message> messageList = FXCollections.observableArrayList((List<Message>)evt.getNewValue());
+    Platform.runLater(() -> {
+      messages.setAll(messageList);
+    });
   }
 
-  public StringProperty messageProperty()
+  public void sendMessage()
   {
+    String input = message.get();
+    chatModel.sendMessage(input);
+  }
+
+  public int numberOfConnections()
+  {
+    return chatModel.getNumberOfConnections();
+  }
+
+  public StringProperty getMessage()
+  {
+    return message;
+  }
+
+  public ObservableList<Message> loadMessages() {
     return messages;
-  }
-
-  public void updateMessage(String message)
-  {
-    model.updateMessage(message);
   }
 }

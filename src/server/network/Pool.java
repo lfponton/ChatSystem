@@ -15,7 +15,7 @@ public class Pool
 
   public synchronized void broadcast(PropertyChangeEvent evt) {
     for (ServerSocketHandler connection : connections)
-      connection.onUpdated(evt);
+      connection.onUpdate(evt);
   }
 
   public void removeConnection(ServerSocketHandler handler)
