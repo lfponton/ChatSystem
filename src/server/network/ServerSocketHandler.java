@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 public class ServerSocketHandler implements Runnable
 {
@@ -47,6 +48,11 @@ public class ServerSocketHandler implements Runnable
         {
           model.sendMessage((Message) request.getArgument());
         }
+        else if ("Broadcast".equals(request.getType()))
+        {
+          model.addMessage((Message) request.getArgument());
+          pool.broadcast(model.getMessages());
+        }
       }
     }
     catch (IOException | ClassNotFoundException e)
@@ -55,7 +61,7 @@ public class ServerSocketHandler implements Runnable
     }
   }
 
-  private void onNewMessage(PropertyChangeEvent evt)
+  public void onNewMessage(PropertyChangeEvent evt)
   {
     try
     {
@@ -72,6 +78,19 @@ public class ServerSocketHandler implements Runnable
       objects, but not the element objects which have been changed.
       SOURCE: https://stackoverflow.com/questions/33490947/java-object-linkedlist-attribute-only-receiving-the-first-element-on-server-sid
        */
+      outToClient.reset();
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  public void broadcastMessage(List<String> message) {
+    try
+    {
+      outToClient
+          .writeObject(new Request( "Broadcast", message));
       outToClient.reset();
     }
     catch (IOException e)

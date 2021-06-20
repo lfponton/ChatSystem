@@ -45,13 +45,18 @@ public class SocketClient implements Client
     return 0;
   }
 
+  @Override public void broadcastMessage(String message)
+  {
+    handler.request(new Message(username, message), "Broadcast");
+  }
+
   public void setUsername(String username)
   {
     this.username = username;
   }
 
-  public void sendMessage(String str) {
-      handler.request(new Message(username, str), "NewMessage");
+  public void sendMessage(String message) {
+      handler.request(new Message(username, message), "NewMessage");
   }
 
 

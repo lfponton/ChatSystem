@@ -49,7 +49,6 @@ public class ClientSocketHandler implements Runnable
   {
     try
     {
-      System.out.println("Sending a message from Client: request");
       outToServer.writeObject(new Request(type, arg));
     }
     catch (IOException e)

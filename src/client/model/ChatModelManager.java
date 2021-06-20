@@ -16,17 +16,11 @@ public class ChatModelManager implements ChatModel
     this.client = client;
     client.startClient();
     client.addPropertyChangeListener("NewMessage", this::onNewMessage);
-    client.addPropertyChangeListener("Update", this::onUpdate);
-  }
-
-  private void onUpdate(PropertyChangeEvent evt)
-  {
-    support.firePropertyChange(evt);
+    client.addPropertyChangeListener("Broadcast", this::onNewMessage);
   }
 
   private void onNewMessage(PropertyChangeEvent evt)
   {
-    System.out.println((evt.getNewValue()));
     support.firePropertyChange(evt);
   }
 
@@ -38,6 +32,11 @@ public class ChatModelManager implements ChatModel
   @Override public void setUsername(String username)
   {
     client.setUsername(username);
+  }
+
+  @Override public void broadcastMessage(String message)
+  {
+    client.broadcastMessage(message);
   }
 
   @Override public int getNumberOfConnections()

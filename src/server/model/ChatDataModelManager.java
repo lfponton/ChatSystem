@@ -23,6 +23,16 @@ public class ChatDataModelManager implements ChatDataModel
     support.firePropertyChange("NewMessage", null, messages);
   }
 
+  @Override public void addMessage(Message message)
+  {
+    messages.add(message.toString());
+  }
+
+  @Override public List<String> getMessages()
+  {
+    return messages;
+  }
+
   @Override public void addPropertyChangeListener(String name,
       PropertyChangeListener listener)
   {
@@ -46,4 +56,6 @@ public class ChatDataModelManager implements ChatDataModel
   {
     support.removePropertyChangeListener(listener);
   }
+
+  // TODO removeConnection()
 }

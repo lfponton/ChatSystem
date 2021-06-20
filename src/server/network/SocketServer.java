@@ -20,18 +20,19 @@ public class SocketServer
     try
     {
       ServerSocket serverSocket = new ServerSocket(1234);
+      Pool pool = new Pool();
 
       while (true)
       {
-      Pool pool = new Pool();
+        Socket socket = serverSocket.accept();
 
-      Socket socket = serverSocket.accept();
+        ServerSocketHandler handler = new ServerSocketHandler(socket, model,
+            pool);
 
-      ServerSocketHandler handler = new ServerSocketHandler(socket, model, pool);
+        pool.addConnection(handler);
 
-      new Thread(handler).start();
-      pool.addConnection(handler);
-    }
+        new Thread(handler).start();
+      }
     }
     catch (IOException e)
     {

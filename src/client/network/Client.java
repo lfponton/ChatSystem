@@ -7,7 +7,8 @@ public interface Client extends PropertyChangeSubject
 {
   void startClient();
   void listenToServer(Request request);
-  void sendMessage(String str);
-  void setUsername(String str);
+  void sendMessage(String message);
+  void setUsername(String username);
   int getNumberOfConnections();
+  void broadcastMessage(String message);
 }

@@ -50,4 +50,10 @@ public class ChatController
     numberOfConnections
         .setText(String.valueOf(chatViewModel.numberOfConnections()));
   }
+
+  public void broadcastMessageButton(ActionEvent actionEvent)
+  {
+    chatViewModel.broadcastMessage();
+    messageField.clear();
+  }
 }

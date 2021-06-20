@@ -24,16 +24,8 @@ public class ChatViewModel
     message = new SimpleStringProperty();
     messages = FXCollections.observableArrayList(new ArrayList<>());
     numberOfConnections = "";
-    chatModel.addPropertyChangeListener("Update", this::onUpdate);
     chatModel.addPropertyChangeListener("NewMessage", this::onNewMessage);
-  }
-
-  private void onUpdate(PropertyChangeEvent evt)
-  {
-    ObservableList<String> messageList = FXCollections.observableArrayList((List<String>)evt.getNewValue());
-    Platform.runLater(() -> {
-      messages.setAll(messageList);
-    });
+    chatModel.addPropertyChangeListener("Broadcast", this::onNewMessage);
   }
 
   private void onNewMessage(PropertyChangeEvent evt)
@@ -62,5 +54,11 @@ public class ChatViewModel
 
   public ObservableList<String> loadMessages() {
     return messages;
+  }
+
+  public void broadcastMessage()
+  {
+    String input = message.get();
+    chatModel.broadcastMessage(input);
   }
 }

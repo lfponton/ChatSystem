@@ -1,6 +1,7 @@
 package server.network;
 
-import java.beans.PropertyChangeEvent;
+import transferobjects.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,21 +9,21 @@ public class Pool
 {
   private List<ServerSocketHandler> connections = new ArrayList<>();
 
-  public synchronized void addConnection(ServerSocketHandler handler)
+  public synchronized void addConnection(ServerSocketHandler connection)
   {
-    connections.add(handler);
+    connections.add(connection);
   }
 
-  /*
-  public synchronized void broadcast(PropertyChangeEvent evt) {
+  public synchronized void broadcast(List<String> messages) {
     for (ServerSocketHandler connection : connections)
-      connection.onUpdate(evt);
+    {
+      connection.broadcastMessage(messages);
+    }
+
   }
 
-   */
-
-  public void removeConnection(ServerSocketHandler handler)
+  public void removeConnection(ServerSocketHandler connection)
   {
-    connections.remove(handler);
+    connections.remove(connection);
   }
 }
