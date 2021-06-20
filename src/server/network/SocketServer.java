@@ -20,6 +20,9 @@ public class SocketServer
     try
     {
       ServerSocket serverSocket = new ServerSocket(1234);
+
+      while (true)
+      {
       Pool pool = new Pool();
       System.out.println("Server ready.");
 
@@ -32,10 +35,12 @@ public class SocketServer
       new Thread(handler).start();
       pool.addConnection(handler);
     }
+    }
     catch (IOException e)
     {
       e.printStackTrace();
     }
 
+    // TODO Fix SocketException
   }
 }

@@ -1,9 +1,6 @@
 package client.model;
 
-import transferobjects.Message;
 import util.PropertyChangeSubject;
-
-import java.util.List;
 
 public interface ChatModel extends PropertyChangeSubject
 {

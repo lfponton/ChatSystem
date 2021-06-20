@@ -1,13 +1,10 @@
 package client.model;
 
 import client.network.Client;
-import transferobjects.Message;
-import transferobjects.MessageList;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.List;
 
 public class ChatModelManager implements ChatModel
 {
@@ -29,6 +26,7 @@ public class ChatModelManager implements ChatModel
 
   private void onNewMessage(PropertyChangeEvent evt)
   {
+    System.out.println((evt.getNewValue()));
     support.firePropertyChange(evt);
   }
 

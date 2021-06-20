@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import transferobjects.Message;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class ChatViewModel
   private ChatModel chatModel;
   private StringProperty message;
   private String numberOfConnections;
-  private ObservableList<Message> messages;
+  private ObservableList<String> messages;
 
   public ChatViewModel(ChatModel chatModel)
   {
@@ -31,7 +30,7 @@ public class ChatViewModel
 
   private void onUpdate(PropertyChangeEvent evt)
   {
-    ObservableList<Message> messageList = FXCollections.observableArrayList((List<Message>)evt.getNewValue());
+    ObservableList<String> messageList = FXCollections.observableArrayList((List<String>)evt.getNewValue());
     Platform.runLater(() -> {
       messages.setAll(messageList);
     });
@@ -39,7 +38,7 @@ public class ChatViewModel
 
   private void onNewMessage(PropertyChangeEvent evt)
   {
-    ObservableList<Message> messageList = FXCollections.observableArrayList((List<Message>)evt.getNewValue());
+    ObservableList<String> messageList = FXCollections.observableArrayList((List<String>) evt.getNewValue());
     Platform.runLater(() -> {
       messages.setAll(messageList);
     });
@@ -61,7 +60,7 @@ public class ChatViewModel
     return message;
   }
 
-  public ObservableList<Message> loadMessages() {
+  public ObservableList<String> loadMessages() {
     return messages;
   }
 }

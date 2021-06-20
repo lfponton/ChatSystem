@@ -13,10 +13,13 @@ public class Pool
     connections.add(handler);
   }
 
+  /*
   public synchronized void broadcast(PropertyChangeEvent evt) {
     for (ServerSocketHandler connection : connections)
       connection.onUpdate(evt);
   }
+
+   */
 
   public void removeConnection(ServerSocketHandler handler)
   {

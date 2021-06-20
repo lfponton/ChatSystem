@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import transferobjects.Message;
 
 import java.util.ArrayList;
 
@@ -17,10 +16,10 @@ public class ChatController
 {
   @FXML private TextField messageField;
   @FXML private Label numberOfConnections;
-  @FXML private ListView<Message> chatBox;
+  @FXML private ListView<String> chatBox;
   private ChatViewModel chatViewModel;
   private ViewHandler viewHandler;
-  ObservableList<Message> messages;
+  ObservableList<String> messages;
 
   public void init(ChatViewModel chatViewModel, ViewHandler viewHandler)
   {
@@ -30,14 +29,14 @@ public class ChatController
     messages = FXCollections.observableArrayList(new ArrayList<>());
     chatBox.setItems(messages);
     chatViewModel.loadMessages().addListener(
-        (ListChangeListener<? super Message>) observable -> onNewMessage(
+        (ListChangeListener<? super String>) observable -> onNewMessage(
             observable.getList()));
 
   }
 
-  private void onNewMessage(ObservableList<? extends Message> list)
+  private void onNewMessage(ObservableList<? extends String> list)
   {
-    chatBox.setItems((ObservableList<Message>) list);
+    chatBox.setItems((ObservableList<String>) list);
   }
 
   public void sendMessageButton(ActionEvent evt)

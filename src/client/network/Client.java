@@ -1,11 +1,7 @@
 package client.network;
 
-import transferobjects.Message;
-import transferobjects.MessageList;
 import transferobjects.Request;
 import util.PropertyChangeSubject;
-
-import java.util.List;
 
 public interface Client extends PropertyChangeSubject
 {

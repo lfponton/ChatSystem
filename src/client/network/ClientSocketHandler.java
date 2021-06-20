@@ -19,47 +19,42 @@ public class ClientSocketHandler implements Runnable
   {
     this.socket = socket;
     this.client = client;
+
+    try {
+      outToServer = new ObjectOutputStream(socket.getOutputStream());
+      inFromServer = new ObjectInputStream(socket.getInputStream());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override public void run()
   {
     try
     {
-      inFromServer = new ObjectInputStream(socket.getInputStream());
-      outToServer = new ObjectOutputStream(socket.getOutputStream());
-
-
-      outToServer.writeObject(new Request("Update", null));
-
       while(true)
       {
-        client.listenToServer(receivedRequest());
+        Request request = (Request) inFromServer.readObject();
+        client.listenToServer(request);
       }
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  public Request receivedRequest()
-  {
-    Request request = null;
-    try
-    {
-      request = (Request) inFromServer.readObject();
     }
     catch (IOException | ClassNotFoundException e)
     {
       e.printStackTrace();
     }
-    return request;
   }
 
-  public Request request(Message arg, String type)
-      throws IOException, ClassNotFoundException
+
+  public void request(Message arg, String type)
   {
-    outToServer.writeObject(new Request(type, arg));
-    return (Request) inFromServer.readObject();
+    try
+    {
+      System.out.println("Sending a message from Client: request");
+      outToServer.writeObject(new Request(type, arg));
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
   }
 }

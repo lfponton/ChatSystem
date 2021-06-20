@@ -1,8 +1,8 @@
 package client.network;
 
 import transferobjects.Message;
-import transferobjects.MessageList;
 import transferobjects.Request;
+
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -14,13 +14,10 @@ public class SocketClient implements Client
   private PropertyChangeSupport support;
   private ClientSocketHandler handler;
   private String username;
-  private Message message;
-  private MessageList messages;
 
   public SocketClient()
   {
     support = new PropertyChangeSupport(this);
-    messages = new MessageList();
   }
 
 
@@ -41,6 +38,7 @@ public class SocketClient implements Client
   @Override public void listenToServer(Request request)
   {
     support.firePropertyChange(request.getType(), null, request.getArgument());
+    System.out.println("Property fired to model: Socket client: " + request.getArgument() + " " + request.getType() + " " + request.getArgument().getClass());
   }
 
   public int getNumberOfConnections() {
@@ -54,15 +52,7 @@ public class SocketClient implements Client
   }
 
   public void sendMessage(String str) {
-    try
-    {
-      Request response = handler.request(new Message(username, str), "NewMessage");
-      support.firePropertyChange(response.getType(), null, response.getArgument());
-    }
-    catch (IOException | ClassNotFoundException e)
-    {
-      e.printStackTrace();
-    }
+      handler.request(new Message(username, str), "NewMessage");
   }
 
 

@@ -23,7 +23,7 @@ public class ServerSocketHandler implements Runnable
     this.socket = socket;
     this.model = model;
     this.pool = pool;
-
+    model.addPropertyChangeListener("NewMessage", this::onNewMessage);
     try
     {
       inFromClient = new ObjectInputStream(socket.getInputStream());
@@ -39,17 +39,15 @@ public class ServerSocketHandler implements Runnable
   {
     try
     {
-      Request request = (Request) inFromClient.readObject();
+      while (true)
+      {
+        Request request = (Request) inFromClient.readObject();
 
-      if ("Update".equals(request.getType()))
-      {
-        model.addPropertyChangeListener("Update", this::onUpdate);
-        model.getMessages();
-      }
-      else if ("NewMessage".equals(request.getType()))
-      {
-        model.addPropertyChangeListener("NewMessage", this::onNewMessage);
-        model.sendMessage((Message) request.getArgument());
+        if ("NewMessage".equals(request.getType()))
+        {
+          model.sendMessage((Message) request.getArgument());
+          System.out.println("Message sent to server model");
+        }
       }
     }
     catch (IOException | ClassNotFoundException e)
@@ -62,7 +60,20 @@ public class ServerSocketHandler implements Runnable
   {
     try
     {
-      outToClient.writeObject(new Request(evt.getPropertyName(), evt.getNewValue()));
+      outToClient
+          .writeObject(new Request(evt.getPropertyName(), evt.getNewValue()));
+      /*
+      Problem: the list was only being sent with the first element
+      Java sends references to objects that have already been serialized, to
+      preserve the integrity of object graphs. You should call
+      ObjectOutputStream.reset() after each writeObject(). Or use
+      ObjectOutputStream.writeUnshared(), but note that it still shares
+      referenced objects, i.e. if you try to send a list with both added and
+      changed element objects, it will send the new list and new element
+      objects, but not the element objects which have been changed.
+      SOURCE: https://stackoverflow.com/questions/33490947/java-object-linkedlist-attribute-only-receiving-the-first-element-on-server-sid
+       */
+      outToClient.reset();
     }
     catch (IOException e)
     {
@@ -70,15 +81,4 @@ public class ServerSocketHandler implements Runnable
     }
   }
 
-  public void onUpdate(PropertyChangeEvent evt)
-  {
-    try
-    {
-      outToClient.writeObject(new Request(evt.getPropertyName(), evt.getNewValue()));
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-  }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 public class ChatDataModelManager implements ChatDataModel
 {
   private PropertyChangeSupport support;
-  private List<Message> messages;
+  private List<String> messages;
 
   public ChatDataModelManager() {
     support = new PropertyChangeSupport(this);
@@ -19,13 +19,9 @@ public class ChatDataModelManager implements ChatDataModel
 
   @Override public void sendMessage(Message message)
   {
-    messages.add(message);
+    messages.add(message.toString());
+    System.out.println("List: " + messages );
     support.firePropertyChange("NewMessage", null, messages);
-  }
-
-  @Override public void getMessages()
-  {
-    support.firePropertyChange("Update", null, messages);
   }
 
   @Override public void addPropertyChangeListener(String name,
