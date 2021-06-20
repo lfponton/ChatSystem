@@ -24,11 +24,8 @@ public class SocketServer
       while (true)
       {
       Pool pool = new Pool();
-      System.out.println("Server ready.");
 
       Socket socket = serverSocket.accept();
-
-      System.out.println("Connected to server.");
 
       ServerSocketHandler handler = new ServerSocketHandler(socket, model, pool);
 

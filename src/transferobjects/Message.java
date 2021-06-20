@@ -13,16 +13,6 @@ public class Message implements Serializable
     this.message = message;
   }
 
-  public String getUsername()
-  {
-    return username;
-  }
-
-  public String getMessage()
-  {
-    return message;
-  }
-
   public String toString() {
     return username + ": " + message;
   }

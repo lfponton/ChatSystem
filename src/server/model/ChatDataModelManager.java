@@ -20,7 +20,6 @@ public class ChatDataModelManager implements ChatDataModel
   @Override public void sendMessage(Message message)
   {
     messages.add(message.toString());
-    System.out.println("List: " + messages );
     support.firePropertyChange("NewMessage", null, messages);
   }
 

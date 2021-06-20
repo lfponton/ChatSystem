@@ -38,7 +38,6 @@ public class SocketClient implements Client
   @Override public void listenToServer(Request request)
   {
     support.firePropertyChange(request.getType(), null, request.getArgument());
-    System.out.println("Property fired to model: Socket client: " + request.getArgument() + " " + request.getType() + " " + request.getArgument().getClass());
   }
 
   public int getNumberOfConnections() {

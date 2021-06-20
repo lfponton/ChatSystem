@@ -46,7 +46,6 @@ public class ServerSocketHandler implements Runnable
         if ("NewMessage".equals(request.getType()))
         {
           model.sendMessage((Message) request.getArgument());
-          System.out.println("Message sent to server model");
         }
       }
     }
